@@ -1,6 +1,8 @@
 package com.university.service;
 
 import com.university.entity.Student;
+import com.university.feignclient.AddressFeignClient;
+import com.university.model.AddressResponse;
 import com.university.model.StudentRequest;
 import com.university.model.StudentResponse;
 import com.university.repository.StudentRepository;
@@ -13,6 +15,9 @@ public class StudentService {
     @Autowired
     StudentRepository studentRepository;
 
+    @Autowired
+    AddressFeignClient addressFeignClient;
+
     public StudentResponse createStudent(StudentRequest request) {
 
         Student student = new Student();
@@ -24,17 +29,23 @@ public class StudentService {
 
         studentRepository.save(student);
 
-        // ToDo : set address info before returning student response
+        StudentResponse studentResponse = new StudentResponse(student);
+        studentResponse.setAddressResponse(getAddress(student.getAddressId()));
 
-        return new StudentResponse(student);
+        return studentResponse;
     }
 
     public StudentResponse getById(long id) {
         Student student = studentRepository.findById(id).get();
 
-        // ToDo : set address info before returning student response
+        StudentResponse studentResponse = new StudentResponse(student);
+        studentResponse.setAddressResponse(getAddress(student.getAddressId()));
 
-        return new StudentResponse(student);
+        return studentResponse;
+    }
+
+    public AddressResponse getAddress(long id) {
+        return addressFeignClient.getById(id);
     }
 
 }
