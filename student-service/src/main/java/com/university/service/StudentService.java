@@ -16,7 +16,7 @@ public class StudentService {
     StudentRepository studentRepository;
 
     @Autowired
-    GenericFeignClient feignClient;
+    ExternalServices externalServices;
 
     public StudentResponse createStudent(StudentRequest request) {
 
@@ -30,7 +30,7 @@ public class StudentService {
         studentRepository.save(student);
 
         StudentResponse studentResponse = new StudentResponse(student);
-        studentResponse.setAddressResponse(getAddress(student.getAddressId()));
+        studentResponse.setAddressResponse(externalServices.getAddressResponse(student.getAddressId()));
 
         return studentResponse;
     }
@@ -39,13 +39,9 @@ public class StudentService {
         Student student = studentRepository.findById(id).get();
 
         StudentResponse studentResponse = new StudentResponse(student);
-        studentResponse.setAddressResponse(getAddress(student.getAddressId()));
+        studentResponse.setAddressResponse(externalServices.getAddressResponse(student.getAddressId()));
 
         return studentResponse;
-    }
-
-    public AddressResponse getAddress(long id) {
-        return feignClient.getById(id);
     }
 
 }
