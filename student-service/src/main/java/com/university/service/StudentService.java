@@ -1,7 +1,7 @@
 package com.university.service;
 
 import com.university.entity.Student;
-import com.university.feignclient.AddressFeignClient;
+import com.university.feignclient.GenericFeignClient;
 import com.university.model.AddressResponse;
 import com.university.model.StudentRequest;
 import com.university.model.StudentResponse;
@@ -16,7 +16,7 @@ public class StudentService {
     StudentRepository studentRepository;
 
     @Autowired
-    AddressFeignClient addressFeignClient;
+    GenericFeignClient feignClient;
 
     public StudentResponse createStudent(StudentRequest request) {
 
@@ -45,7 +45,7 @@ public class StudentService {
     }
 
     public AddressResponse getAddress(long id) {
-        return addressFeignClient.getById(id);
+        return feignClient.getById(id);
     }
 
 }
